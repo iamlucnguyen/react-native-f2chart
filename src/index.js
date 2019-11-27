@@ -1,5 +1,11 @@
 import React, { PureComponent, createRef } from "react";
-import { WebView as RNWebView, StyleSheet, Platform, Dimensions, DeviceEventEmitter } from "react-native";
+import {
+  WebView as RNWebView,
+  StyleSheet,
+  Platform,
+  Dimensions,
+  DeviceEventEmitter
+} from "react-native";
 
 const changeData = data => `chart.changeData(${JSON.stringify(data)});`;
 
@@ -28,21 +34,21 @@ export default class Chart extends PureComponent<Props> {
     this.chart = createRef();
     this.state = {
       deviceWidth: Dimensions.get("window").width,
-      deviceHeight: Dimensions.get("window").height,
+      deviceHeight: Dimensions.get("window").height
     };
   }
 
   componentDidMount() {
     DeviceEventEmitter.addListener(
       "didUpdateDimensions",
-      this.handleDimensionsUpdate,
+      this.handleDimensionsUpdate
     );
   }
 
   componentWillUnmount() {
     DeviceEventEmitter.removeListener(
       "didUpdateDimensions",
-      this.handleDimensionsUpdate,
+      this.handleDimensionsUpdate
     );
   }
 
@@ -52,10 +58,12 @@ export default class Chart extends PureComponent<Props> {
     const deviceWidth = Dimensions.get("window").width;
     const deviceHeight = Dimensions.get("window").height;
     if (
-      deviceWidth !== this.state.deviceWidth
-        || deviceHeight !== this.state.deviceHeight
+      deviceWidth !== this.state.deviceWidth ||
+      deviceHeight !== this.state.deviceHeight
     ) {
-      this.setState({ deviceWidth, deviceHeight }, this.repaint);
+      this.setState({ deviceWidth, deviceHeight }, () => {
+        setTimeout(this.repaint, 100);
+      });
     }
   };
 
@@ -80,11 +88,14 @@ export default class Chart extends PureComponent<Props> {
   };
 
   repaint = () => {
-    this.setState({
-      repaint: true,
-    }, () => {
-      this.setState({repaint: false});
-    })
+    this.setState(
+      {
+        repaint: true
+      },
+      () => {
+        this.setState({ repaint: false });
+      }
+    );
   };
 
   render() {
